@@ -24,6 +24,7 @@ class JdbcTemplate(val dataSource: DataSource) {
                     is String -> statement.setString(parameterIndex, param)
                     is Int -> statement.setInt(parameterIndex, param)
                     is Long -> statement.setLong(parameterIndex, param)
+                    is Boolean -> statement.setBoolean(parameterIndex, param)
                     is LocalDate -> statement.setDate(parameterIndex, Date.valueOf(param))
 
                 }
@@ -32,6 +33,15 @@ class JdbcTemplate(val dataSource: DataSource) {
             val keys = statement.generatedKeys
             keys.next()
             id(keys.getLong(1))
+        }
+    }
+
+    fun <T> findObject(sql: String, mapper: (ResultSet) -> T, id: Long): T? {
+        val list = query(sql, { ps -> ps.setLong(1, id) }, mapper)
+        when {
+            list.isEmpty() -> return null
+
+            else -> return list.first()
         }
     }
 

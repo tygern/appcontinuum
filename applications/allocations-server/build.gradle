@@ -6,10 +6,6 @@ dependencies {
     compile project(":components:test-support")
 
     compile project(":components:allocations")
-
-    compile project(":components:accounts")
-    compile project(":components:projects")
-    compile project(":components:users")
 }
 
 jar {

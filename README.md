@@ -12,6 +12,7 @@ v2              Functional groups
 v3              Feature groups (Bounded Context)
 v4              Components
 v5              Applications
+v6              Services
 ```
 
 ### Database Setup
@@ -34,4 +35,8 @@ flyway -url="jdbc:mysql://localhost:3306/uservices_test?user=root&password=" -lo
 export PORT=8081
 
 export VCAP_SERVICES='{ "services": { "p-mysql": [ { "credentials": { "jdbcUrl": "jdbc:mysql://localhost:3306/uservices_test?user=root&password=&useTimezone=true&serverTimezone=UTC" } } ] } }'
+
+export REGISTRATION_SERVER_ENDPOINT=http://localhost:8883
 ````
+
+_Note: The registration server endpoint port must match the port used in the FlowTest_
