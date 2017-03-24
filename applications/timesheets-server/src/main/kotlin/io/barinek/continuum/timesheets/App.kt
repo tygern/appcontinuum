@@ -3,9 +3,9 @@ package io.barinek.continuum.timesheets
 import io.barinek.continuum.jdbcsupport.DataSourceConfig
 import io.barinek.continuum.restsupport.BasicApp
 import io.barinek.continuum.restsupport.DefaultController
-import io.barinek.continuum.restsupport.RestTemplate
 import org.eclipse.jetty.server.handler.HandlerList
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.web.client.RestTemplate
 import java.util.*
 
 class App : BasicApp() {

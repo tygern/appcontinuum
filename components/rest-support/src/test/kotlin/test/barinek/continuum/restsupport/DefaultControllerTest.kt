@@ -2,11 +2,12 @@ package test.barinek.continuum.restsupport
 
 import io.barinek.continuum.restsupport.BasicApp
 import io.barinek.continuum.restsupport.DefaultController
-import io.barinek.continuum.restsupport.RestTemplate
+import io.barinek.continuum.restsupport.get
 import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.springframework.web.client.RestTemplate
 import kotlin.test.assertEquals
 
 class DefaultControllerTest {

@@ -1,11 +1,12 @@
 package test.barinek.continuum
 
 import io.barinek.continuum.TestDataSourceConfig
-import io.barinek.continuum.restsupport.RestTemplate
-import org.apache.http.message.BasicNameValuePair
+import io.barinek.continuum.restsupport.get
+import io.barinek.continuum.restsupport.post
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.springframework.web.client.RestTemplate
 import java.io.File
 import kotlin.test.assertEquals
 
@@ -51,10 +52,10 @@ class FlowTest {
         val aUserId = findResponseId(response)
         assert(aUserId.toLong() > 0)
 
-        response = template.get("$registrationServer/users", BasicNameValuePair("userId", aUserId))
+        response = template.get("$registrationServer/users?userId={userId}", Pair("userId", aUserId))
         assert(!response.isNullOrEmpty())
 
-        response = template.get("$registrationServer/accounts", BasicNameValuePair("ownerId", aUserId))
+        response = template.get("$registrationServer/accounts?ownerId={ownerId}", Pair("ownerId", aUserId))
         val anAccountId = findResponseId(response)
         assert(anAccountId.toLong() > 0)
 
@@ -62,7 +63,7 @@ class FlowTest {
         val aProjectId = findResponseId(response)
         assert(aProjectId.toLong() > 0)
 
-        response = template.get("$registrationServer/projects", BasicNameValuePair("accountId", anAccountId))
+        response = template.get("$registrationServer/projects?accountId={accountId}", Pair("accountId", anAccountId))
         assert(!response.isNullOrEmpty())
 
         ///
@@ -76,7 +77,7 @@ class FlowTest {
         val anAllocationId = findResponseId(response)
         assert(aProjectId.toLong() > 0)
 
-        response = template.get("$allocationsServer/allocations", BasicNameValuePair("projectId", aProjectId))
+        response = template.get("$allocationsServer/allocations?projectId={projectId}", Pair("projectId", aProjectId))
         assert(!response.isNullOrEmpty())
 
 
@@ -89,7 +90,7 @@ class FlowTest {
         val aStoryId = findResponseId(response)
         assert(aStoryId.toLong() > 0)
 
-        response = template.get("$backlogServer/stories", BasicNameValuePair("projectId", aProjectId))
+        response = template.get("$backlogServer/stories?projectId={projectId}", Pair("projectId", aProjectId))
         assert(!response.isNullOrEmpty())
 
 
@@ -102,7 +103,7 @@ class FlowTest {
         val aTimeEntryId = findResponseId(response)
         assert(aTimeEntryId.toLong() > 0)
 
-        response = template.get("$timesheetsServer/time-entries", BasicNameValuePair("userId", aUserId))
+        response = template.get("$timesheetsServer/time-entries?userId={userId}", Pair("userId", aUserId))
         assert(!response.isNullOrEmpty())
     }
 

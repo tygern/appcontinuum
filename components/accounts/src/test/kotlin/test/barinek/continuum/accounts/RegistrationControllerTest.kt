@@ -7,6 +7,7 @@ import io.barinek.continuum.accounts.AccountDataGateway
 import io.barinek.continuum.accounts.RegistrationController
 import io.barinek.continuum.accounts.RegistrationService
 import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.restsupport.post
 import io.barinek.continuum.users.UserDataGateway
 import io.barinek.continuum.users.UserInfo
 import org.eclipse.jetty.server.handler.HandlerList

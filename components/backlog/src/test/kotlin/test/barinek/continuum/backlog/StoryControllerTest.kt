@@ -9,7 +9,8 @@ import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
 import io.barinek.continuum.backlog.*
 import io.barinek.continuum.restsupport.BasicApp
-import org.apache.http.message.BasicNameValuePair
+import io.barinek.continuum.restsupport.get
+import io.barinek.continuum.restsupport.post
 import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
@@ -70,7 +71,7 @@ class StoryControllerTest : TestControllerSupport() {
     fun testFind() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val response = template.get("http://localhost:8081/stories", BasicNameValuePair("projectId", "55432"))
+        val response = template.get("http://localhost:8081/stories?projectId={projectId}", Pair("projectId", "55432"))
         val stories: List<StoryInfo> = mapper.readValue(response, object : TypeReference<List<StoryInfo>>() {})
         val actual = stories.first()
 

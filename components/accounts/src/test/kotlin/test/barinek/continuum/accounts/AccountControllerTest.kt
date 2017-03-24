@@ -8,7 +8,7 @@ import io.barinek.continuum.accounts.AccountController
 import io.barinek.continuum.accounts.AccountDataGateway
 import io.barinek.continuum.accounts.AccountInfo
 import io.barinek.continuum.restsupport.BasicApp
-import org.apache.http.message.BasicNameValuePair
+import io.barinek.continuum.restsupport.get
 import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
@@ -40,8 +40,8 @@ class AccountControllerTest : TestControllerSupport() {
     fun testFind() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val ownerId = BasicNameValuePair("ownerId", "4765")
-        val response = template.get("http://localhost:8081/accounts", ownerId)
+        val ownerId = Pair("ownerId", "4765")
+        val response = template.get("http://localhost:8081/accounts?ownerId={ownerId}", ownerId)
         val list: List<AccountInfo> = mapper.readValue(response, object : TypeReference<List<AccountInfo>>() {})
         val actual = list.first()
 

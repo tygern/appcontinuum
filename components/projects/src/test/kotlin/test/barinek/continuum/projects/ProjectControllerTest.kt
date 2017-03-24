@@ -8,7 +8,8 @@ import io.barinek.continuum.projects.ProjectController
 import io.barinek.continuum.projects.ProjectDataGateway
 import io.barinek.continuum.projects.ProjectInfo
 import io.barinek.continuum.restsupport.BasicApp
-import org.apache.http.message.BasicNameValuePair
+import io.barinek.continuum.restsupport.get
+import io.barinek.continuum.restsupport.post
 import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
@@ -57,7 +58,7 @@ class ProjectControllerTest : TestControllerSupport() {
     fun testList() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val response = template.get("http://localhost:8081/projects", BasicNameValuePair("accountId", "1673"))
+        val response = template.get("http://localhost:8081/projects?accountId={accountId}", Pair("accountId", "1673"))
         val list: List<ProjectInfo> = mapper.readValue(response, object : TypeReference<List<ProjectInfo>>() {})
         val actual = list.first()
 
@@ -72,7 +73,7 @@ class ProjectControllerTest : TestControllerSupport() {
     fun testGet() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val response = template.get("http://localhost:8081/project", BasicNameValuePair("projectId", "55431"))
+        val response = template.get("http://localhost:8081/project?projectId={projectId}", Pair("projectId", "55431"))
         val actual = mapper.readValue(response, ProjectInfo::class.java)
 
         assertEquals(55431L, actual.id)
@@ -86,7 +87,7 @@ class ProjectControllerTest : TestControllerSupport() {
     fun testNotFound() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val response = template.get("http://localhost:8081/project", BasicNameValuePair("projectId", "5280"))
+        val response = template.get("http://localhost:8081/project?projectId={projectId}", Pair("projectId", "5280"))
         assert(response.isBlank())
     }
 }

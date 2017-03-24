@@ -4,10 +4,10 @@ import io.barinek.continuum.TestControllerSupport
 import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
 import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.users.UserController
 import io.barinek.continuum.users.UserDataGateway
 import io.barinek.continuum.users.UserInfo
-import org.apache.http.message.BasicNameValuePair
 import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
@@ -39,7 +39,7 @@ class UserControllerTest : TestControllerSupport() {
     fun testShow() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val response = template.get("http://localhost:8081/users", BasicNameValuePair("userId", "4765"))
+        val response = template.get("http://localhost:8081/users?userId={userId}", Pair("userId", "4765"))
         val actual = mapper.readValue(response, UserInfo::class.java)
 
         assertEquals(4765L, actual.id)

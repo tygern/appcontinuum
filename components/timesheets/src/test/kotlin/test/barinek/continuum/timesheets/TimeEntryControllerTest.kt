@@ -8,8 +8,9 @@ import io.barinek.continuum.TestControllerSupport
 import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
 import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.restsupport.get
+import io.barinek.continuum.restsupport.post
 import io.barinek.continuum.timesheets.*
-import org.apache.http.message.BasicNameValuePair
 import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
@@ -72,7 +73,7 @@ class TimeEntryControllerTest : TestControllerSupport() {
     fun testFind() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val response = template.get("http://localhost:8081/time-entries", BasicNameValuePair("userId", "4765"))
+        val response = template.get("http://localhost:8081/time-entries?userId={userId}", Pair("userId", "4765"))
         val stories: List<TimeEntryInfo> = mapper.readValue(response, object : TypeReference<List<TimeEntryInfo>>() {})
         val actual = stories.first()
 
