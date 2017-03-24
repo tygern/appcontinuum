@@ -2,8 +2,8 @@ package test.barinek.continuum.backlog
 
 import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.backlog.StoryDataGateway
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class StoryDataGatewayTest() {
@@ -20,7 +20,7 @@ class StoryDataGatewayTest() {
         gateway.create(22L, "aStory")
 
         val foundStory = template.query("select id, project_id, name from stories", { },
-                { rs -> listOf(rs.getLong("id"), rs.getLong("project_id"), rs.getString("name")) }).first()
+                { rs, num -> listOf(rs.getLong("id"), rs.getLong("project_id"), rs.getString("name")) }).first()
 
         assert(foundStory[0] as Long > 0)
         assertEquals(22L, foundStory[1])

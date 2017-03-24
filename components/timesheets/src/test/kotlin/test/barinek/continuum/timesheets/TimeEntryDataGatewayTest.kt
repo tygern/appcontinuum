@@ -1,9 +1,9 @@
 package test.barinek.continuum.timesheets
 
 import io.barinek.continuum.TestDataSourceConfig
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
 import io.barinek.continuum.timesheets.TimeEntryDataGateway
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
@@ -21,8 +21,8 @@ class TimeEntryDataGatewayTest() {
 
         gateway.create(22L, 12L, now, 8)
 
-        val actual = template.query("select id, project_id, user_id, date, hours from time_entries", { },
-                { rs -> listOf(rs.getLong("id"), rs.getLong("project_id"), rs.getLong("user_id"), rs.getDate("date").toLocalDate(), rs.getInt("hours")) }).first()
+        val actual = template.query("select id, project_id, user_id, date, hours from time_entries")
+        { rs, num -> listOf(rs.getLong("id"), rs.getLong("project_id"), rs.getLong("user_id"), rs.getDate("date").toLocalDate(), rs.getInt("hours")) }.first()
 
         assert(actual[0] as Long > 0)
         assertEquals(22L, actual[1])

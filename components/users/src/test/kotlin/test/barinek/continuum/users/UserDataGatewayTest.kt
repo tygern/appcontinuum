@@ -1,9 +1,9 @@
 package test.barinek.continuum.users
 
 import io.barinek.continuum.TestDataSourceConfig
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
 import io.barinek.continuum.users.UserDataGateway
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class UserDataGatewayTest() {
@@ -15,8 +15,8 @@ class UserDataGatewayTest() {
     fun testCreate() {
         gateway.create("aUser")
 
-        val actual = template.query("select id, name from users", { },
-                { rs -> listOf(rs.getLong("id"), rs.getString("name")) }).first()
+        val actual = template.query("select id, name from users")
+        { rs, num -> listOf(rs.getLong("id"), rs.getString("name")) }.first()
 
         assert(actual[0] as Long > 0)
         assertEquals("aUser", actual[1])

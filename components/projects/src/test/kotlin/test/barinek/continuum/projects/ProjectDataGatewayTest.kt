@@ -1,9 +1,9 @@
 package test.barinek.continuum.projects
 
 import io.barinek.continuum.TestDataSourceConfig
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
 import io.barinek.continuum.projects.ProjectDataGateway
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class ProjectDataGatewayTest() {
@@ -18,8 +18,8 @@ class ProjectDataGatewayTest() {
 
         gateway.create(1L, "aProject")
 
-        val actual = template.query("select id, account_id, name, active from projects", { },
-                { rs -> listOf(rs.getLong("id"), rs.getLong("account_id"), rs.getString("name"), rs.getBoolean("active")) }).first()
+        val actual = template.query("select id, account_id, name, active from projects")
+        { rs, num -> listOf(rs.getLong("id"), rs.getLong("account_id"), rs.getString("name"), rs.getBoolean("active")) }.first()
 
         assert(actual[0] as Long > 0)
         assertEquals(1L, actual[1])

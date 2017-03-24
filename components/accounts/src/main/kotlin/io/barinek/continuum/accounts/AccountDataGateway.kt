@@ -1,21 +1,38 @@
 package io.barinek.continuum.accounts
 
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
-import java.sql.Connection
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
+import java.sql.Statement.RETURN_GENERATED_KEYS
 
 class AccountDataGateway(val jdbcTemplate: JdbcTemplate) {
-    val createSql = "insert into accounts (owner_id, name) values (?, ?)"
-
     fun create(ownerId: Long, name: String): AccountRecord {
-        return jdbcTemplate.create(createSql, { id -> AccountRecord(id, ownerId, name) }, ownerId, name)
-    }
+        val keyHolder: KeyHolder = GeneratedKeyHolder()
 
-    fun create(connection: Connection, ownerId: Long, name: String): AccountRecord {
-        return jdbcTemplate.create(connection, createSql, { id -> AccountRecord(id, ownerId, name) }, ownerId, name)
+        jdbcTemplate.update(
+                {
+                    connection ->
+                    val ps = connection.prepareStatement(
+                            "insert into accounts (owner_id, name) values (?, ?)", RETURN_GENERATED_KEYS)
+                    ps.setLong(1, ownerId)
+                    ps.setString(2, name)
+                    ps
+                }, keyHolder)
+
+        val id = keyHolder.key.toLong()
+
+        return jdbcTemplate.queryForObject(
+                "select id, owner_id, name from accounts where id = ?", arrayOf(id))
+        { rs, num ->
+            AccountRecord(
+                    id = rs.getLong("id"),
+                    ownerId = rs.getLong("owner_id"),
+                    name = rs.getString("name"))
+        }
     }
 
     fun findBy(ownerId: Long): List<AccountRecord> {
         val sql = "select id, owner_id, name from accounts where owner_id = ? order by name desc limit 1"
-        return jdbcTemplate.findBy(sql, { rs -> AccountRecord(rs.getLong(1), rs.getLong(2), rs.getString(3)) }, ownerId)
+        return jdbcTemplate.query(sql, arrayOf(ownerId)) { rs, num -> AccountRecord(rs.getLong(1), rs.getLong(2), rs.getString(3)) }
     }
 }

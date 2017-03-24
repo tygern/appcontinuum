@@ -2,8 +2,8 @@ package test.barinek.continuum.accounts
 
 import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.accounts.AccountDataGateway
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class AccountDataGatewayTest() {
@@ -17,8 +17,8 @@ class AccountDataGatewayTest() {
 
         gateway.create(12L, "anAccount")
 
-        val actual = template.query("select id, owner_id, name from accounts", { },
-                { rs -> listOf(rs.getLong("id"), rs.getLong("owner_id"), rs.getString("name")) }).first()
+        val actual = template.query("select id, owner_id, name from accounts")
+        { rs, num -> listOf(rs.getLong("id"), rs.getLong("owner_id"), rs.getString("name")) }.first()
 
         assert(actual[0] as Long > 0)
         assertEquals(12L, actual[1])

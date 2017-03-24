@@ -6,8 +6,6 @@ import io.barinek.continuum.TestScenarioSupport
 import io.barinek.continuum.accounts.AccountDataGateway
 import io.barinek.continuum.accounts.RegistrationController
 import io.barinek.continuum.accounts.RegistrationService
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
-import io.barinek.continuum.jdbcsupport.TransactionManager
 import io.barinek.continuum.restsupport.BasicApp
 import io.barinek.continuum.users.UserDataGateway
 import io.barinek.continuum.users.UserInfo
@@ -15,6 +13,7 @@ import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class RegistrationControllerTest : TestControllerSupport() {
@@ -23,9 +22,8 @@ class RegistrationControllerTest : TestControllerSupport() {
 
         override fun handlerList() = HandlerList().apply {
             val dataSource = TestDataSourceConfig().dataSource
-            val transactionManager = TransactionManager(dataSource)
             val template = JdbcTemplate(dataSource)
-            addHandler(RegistrationController(mapper, RegistrationService(transactionManager, UserDataGateway(template), AccountDataGateway(template))))
+            addHandler(RegistrationController(mapper, RegistrationService(UserDataGateway(template), AccountDataGateway(template))))
         }
     }
 

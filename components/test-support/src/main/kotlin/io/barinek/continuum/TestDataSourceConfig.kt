@@ -1,7 +1,7 @@
 package io.barinek.continuum
 
 import io.barinek.continuum.jdbcsupport.DataSourceConfig
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
+import org.springframework.jdbc.core.JdbcTemplate
 import javax.sql.DataSource
 
 class TestDataSourceConfig(val dataSource: DataSource = hikariDataSource) {

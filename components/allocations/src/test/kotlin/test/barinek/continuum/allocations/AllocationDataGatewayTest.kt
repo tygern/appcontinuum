@@ -2,8 +2,8 @@ package test.barinek.continuum.allocations
 
 import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.allocations.AllocationDataGateway
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
@@ -22,7 +22,7 @@ class AllocationDataGatewayTest() {
         gateway.create(22L, 12L, now, now)
 
         val actual = template.query("select id, project_id, user_id, first_day, last_day from allocations", { },
-                { rs -> listOf(rs.getLong("id"), rs.getLong("project_id"), rs.getLong("user_id"), rs.getDate("first_day").toLocalDate(), rs.getDate("last_day").toLocalDate()) }).first()
+                { rs, num -> listOf(rs.getLong("id"), rs.getLong("project_id"), rs.getLong("user_id"), rs.getDate("first_day").toLocalDate(), rs.getDate("last_day").toLocalDate()) }).first()
 
         assert(actual[0] as Long > 0)
         assertEquals(22L, actual[1])

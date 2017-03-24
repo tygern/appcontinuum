@@ -7,7 +7,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.barinek.continuum.TestControllerSupport
 import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
 import io.barinek.continuum.restsupport.BasicApp
 import io.barinek.continuum.timesheets.*
 import org.apache.http.message.BasicNameValuePair
@@ -15,6 +14,7 @@ import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate
 import kotlin.test.assertEquals
 

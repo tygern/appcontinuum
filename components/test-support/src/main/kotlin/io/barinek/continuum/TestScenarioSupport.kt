@@ -1,6 +1,6 @@
 package io.barinek.continuum
 
-import io.barinek.continuum.jdbcsupport.JdbcTemplate
+import org.springframework.jdbc.core.JdbcTemplate
 
 class TestScenarioSupport {
     val dataSource = TestDataSourceConfig().dataSource
