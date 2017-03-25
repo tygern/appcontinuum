@@ -1,33 +1,32 @@
 package io.barinek.continuum.projects
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.barinek.continuum.restsupport.BasicHandler
-import org.eclipse.jetty.server.Request
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
-class ProjectController(val mapper: ObjectMapper, val gateway: ProjectDataGateway) : BasicHandler() {
+@RestController
+class ProjectController(val gateway: ProjectDataGateway) {
 
-    override fun handle(s: String, request: Request, httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse) {
-        post("/projects", request, httpServletResponse) {
-            val project = mapper.readValue(request.reader, ProjectInfo::class.java)
-            val record = gateway.create(project.accountId, project.name)
-            mapper.writeValue(httpServletResponse.outputStream, ProjectInfo(record.id, record.accountId, record.name, record.active, "project info"))
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/projects")
+    fun create(@RequestBody project: ProjectInfo): ResponseEntity<ProjectInfo> {
+        val record = gateway.create(project.accountId, project.name)
+        val info = ProjectInfo(record.id, record.accountId, record.name, record.active, "project info")
+        return ResponseEntity(info, HttpStatus.CREATED)
+    }
+
+    @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/projects")
+    fun list(@RequestParam accountId: String): List<ProjectInfo> {
+        return gateway.findBy(accountId.toLong()).map { record ->
+            ProjectInfo(record.id, record.accountId, record.name, record.active, "project info")
         }
-        get("/projects", request, httpServletResponse) {
-            val accountId = request.getParameter("accountId")
-            val list = gateway.findBy(accountId.toLong()).map { record ->
-                ProjectInfo(record.id, record.accountId, record.name, record.active, "project info")
-            }
-            mapper.writeValue(httpServletResponse.outputStream, list)
+    }
+
+    @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/project")
+    fun get(@RequestParam projectId: String): ProjectInfo? {
+        val record = gateway.findObject(projectId.toLong())
+        if (record != null) {
+            return ProjectInfo(record.id, record.accountId, record.name, record.active, "project info")
         }
-        get("/project", request, httpServletResponse) {
-            val projectId = request.getParameter("projectId")
-            val record = gateway.findObject(projectId.toLong())
-            if (record != null) {
-                val project = ProjectInfo(record.id, record.accountId, record.name, record.active, "project info")
-                mapper.writeValue(httpServletResponse.outputStream, project)
-            }
-        }
+        return null
     }
 }

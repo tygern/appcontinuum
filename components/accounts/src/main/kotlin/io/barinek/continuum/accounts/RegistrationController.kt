@@ -1,19 +1,17 @@
 package io.barinek.continuum.accounts
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.barinek.continuum.restsupport.BasicHandler
 import io.barinek.continuum.users.UserInfo
-import org.eclipse.jetty.server.Request
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 
-class RegistrationController(val mapper: ObjectMapper, val service: RegistrationService) : BasicHandler() {
+@RestController
+class RegistrationController(val service: RegistrationService) {
 
-    override fun handle(s: String, request: Request, httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse) {
-        post("/registration", request, httpServletResponse) {
-            val user = mapper.readValue(request.reader, UserInfo::class.java)
-            val record = service.createUserWithAccount(user.name)
-            mapper.writeValue(httpServletResponse.outputStream, UserInfo(record.id, record.name, "registration info"))
-        }
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/registration")
+    fun create(@RequestBody user: UserInfo): UserInfo {
+        val record = service.createUserWithAccount(user.name)
+        return UserInfo(record.id, record.name, "registration info")
     }
 }

@@ -7,7 +7,7 @@ import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.server.handler.HandlerList
 import org.slf4j.LoggerFactory
 
-abstract class BasicApp {
+abstract class BasicApp(port: Int, val pathsToScan: Array<out String> = emptyArray()) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val server: Server
 
@@ -16,7 +16,7 @@ abstract class BasicApp {
     init {
         val list = handlerList()
 
-        server = Server(getPort())
+        server = Server(port)
         server.handler = list
         server.stopAtShutdown = true;
 
@@ -31,8 +31,6 @@ abstract class BasicApp {
             }
         }))
     }
-
-    protected abstract fun getPort(): Int
 
     protected abstract fun handlerList(): HandlerList
 

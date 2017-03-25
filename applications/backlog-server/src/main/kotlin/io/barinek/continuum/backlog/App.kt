@@ -1,26 +1,9 @@
 package io.barinek.continuum.backlog
 
-import io.barinek.continuum.jdbcsupport.DataSourceConfig
-import io.barinek.continuum.restsupport.BasicApp
-import io.barinek.continuum.restsupport.DefaultController
-import org.eclipse.jetty.server.handler.HandlerList
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.web.client.RestTemplate
+import io.barinek.continuum.restsupport.SpringApp
 import java.util.*
 
-class App : BasicApp() {
-    override fun getPort() = System.getenv("PORT").toInt()
-
-    override fun handlerList(): HandlerList {
-        val dataSource = DataSourceConfig().createDataSource()
-        val template = JdbcTemplate(dataSource)
-
-        return HandlerList().apply { // ordered
-            addHandler(StoryController(mapper, StoryDataGateway(template), ProjectClient(mapper, RestTemplate())))
-            addHandler(DefaultController())
-        }
-    }
-}
+class App() : SpringApp(System.getenv("PORT").toInt(), "io.barinek.continuum")
 
 fun main(args: Array<String>) {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"))

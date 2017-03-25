@@ -39,7 +39,7 @@ class FlowTest {
 
     @Test
     fun testBasicFlow() {
-        Thread.sleep(4000) // sorry, waiting for servers to start
+        Thread.sleep(10000) // sorry, waiting for servers to start, bit longer for spring-webmvc
 
         var response: String?
 
@@ -75,7 +75,7 @@ class FlowTest {
 
         response = template.post("$allocationsServer/allocations", """{"projectId":$aProjectId,"userId":$aUserId,"firstDay":"2015-05-17","lastDay":"2015-05-26"}""")
         val anAllocationId = findResponseId(response)
-        assert(aProjectId.toLong() > 0)
+        assert(anAllocationId.toLong() > 0)
 
         response = template.get("$allocationsServer/allocations?projectId={projectId}", Pair("projectId", aProjectId))
         assert(!response.isNullOrEmpty())
@@ -103,7 +103,7 @@ class FlowTest {
         val aTimeEntryId = findResponseId(response)
         assert(aTimeEntryId.toLong() > 0)
 
-        response = template.get("$timesheetsServer/time-entries?userId={userId}", Pair("userId", aUserId))
+        response = template.get("$timesheetsServer/time-entries?projectId={projectId}", Pair("projectId", aUserId))
         assert(!response.isNullOrEmpty())
     }
 

@@ -3,8 +3,10 @@ package io.barinek.continuum.accounts
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
+import org.springframework.stereotype.Repository
 import java.sql.Statement.RETURN_GENERATED_KEYS
 
+@Repository
 class AccountDataGateway(val jdbcTemplate: JdbcTemplate) {
     fun create(ownerId: Long, name: String): AccountRecord {
         val keyHolder: KeyHolder = GeneratedKeyHolder()

@@ -1,20 +1,18 @@
 package io.barinek.continuum.accounts
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.barinek.continuum.restsupport.BasicHandler
-import org.eclipse.jetty.server.Request
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
-class AccountController(val mapper: ObjectMapper, val gateway: AccountDataGateway) : BasicHandler() {
+@RestController
+class AccountController(val gateway: AccountDataGateway) {
 
-    override fun handle(s: String, request: Request, httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse) {
-        get("/accounts", request, httpServletResponse) {
-            val ownerId = request.getParameter("ownerId")
-            val list = gateway.findBy(ownerId.toLong()).map { record ->
-                AccountInfo(record.id, record.ownerId, record.name, "account info")
-            }
-            mapper.writeValue(httpServletResponse.outputStream, list)
+    @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/accounts")
+    fun list(@RequestParam ownerId: String): List<AccountInfo> {
+        return gateway.findBy(ownerId.toLong()).map { record ->
+            AccountInfo(record.id, record.ownerId, record.name, "account info")
         }
     }
 }

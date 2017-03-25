@@ -1,34 +1,21 @@
 package test.barinek.continuum.backlog
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import io.barinek.continuum.TestApp
 import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.backlog.*
-import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.backlog.ProjectInfo
+import io.barinek.continuum.backlog.StoryInfo
+import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.restsupport.post
-import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class StoryControllerTest : TestControllerSupport() {
-    val client = mock<ProjectClient>()
-
-    internal var app: BasicApp = object : BasicApp() {
-        override fun getPort() = 8081
-
-        override fun handlerList() = HandlerList().apply {
-            val dataSource = TestDataSourceConfig().dataSource
-            addHandler(StoryController(mapper, StoryDataGateway(JdbcTemplate(dataSource)), client))
-        }
-    }
+    val app = SpringApp(8081, "io.barinek.continuum")
 
     @Before
     fun setUp() {
@@ -44,7 +31,10 @@ class StoryControllerTest : TestControllerSupport() {
     fun testCreate() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        whenever(client.getProject(any())).thenReturn(ProjectInfo(true))
+        val uServiceProjects = TestApp(8883) { mapper, outputStream ->
+            mapper.writeValue(outputStream, ProjectInfo(true))
+        }
+        uServiceProjects.start()
 
         val json = "{\"projectId\":55432,\"name\":\"An epic story\"}"
         val response = template.post("http://localhost:8081/stories", json)
@@ -54,17 +44,24 @@ class StoryControllerTest : TestControllerSupport() {
         assertEquals(55432L, actual.projectId)
         assertEquals("An epic story", actual.name)
         assertEquals("story info", actual.info)
+
+        uServiceProjects.stop()
     }
 
     @Test
     fun testFailedCreate() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        whenever(client.getProject(any())).thenReturn(ProjectInfo(false))
+        val uServiceProjects = TestApp(8883) { mapper, outputStream ->
+            mapper.writeValue(outputStream, ProjectInfo(false))
+        }
+        uServiceProjects.start()
 
         val json = "{\"projectId\":55432,\"name\":\"An epic story\"}"
         val response = template.post("http://localhost:8081/stories", json)
         assert(response.isBlank())
+
+        uServiceProjects.stop()
     }
 
     @Test

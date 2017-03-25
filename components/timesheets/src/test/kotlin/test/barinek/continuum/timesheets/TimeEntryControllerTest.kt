@@ -1,35 +1,22 @@
 package test.barinek.continuum.timesheets
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import io.barinek.continuum.TestApp
 import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.restsupport.post
-import io.barinek.continuum.timesheets.*
-import org.eclipse.jetty.server.handler.HandlerList
+import io.barinek.continuum.timesheets.ProjectInfo
+import io.barinek.continuum.timesheets.TimeEntryInfo
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
 class TimeEntryControllerTest : TestControllerSupport() {
-    val client = mock<ProjectClient>()
-
-    internal var app: BasicApp = object : BasicApp() {
-        override fun getPort() = 8081
-
-        override fun handlerList() = HandlerList().apply {
-            val dataSource = TestDataSourceConfig().dataSource
-            addHandler(TimeEntryController(mapper, TimeEntryDataGateway(JdbcTemplate(dataSource)), client))
-        }
-    }
+    val app = SpringApp(8081, "io.barinek.continuum")
 
     @Before
     fun setUp() {
@@ -45,7 +32,11 @@ class TimeEntryControllerTest : TestControllerSupport() {
     fun testCreate() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        whenever(client.getProject(any())).thenReturn(ProjectInfo(true))
+        val uServiceProjects = TestApp(8883) { mapper, outputStream ->
+            mapper.writeValue(outputStream, ProjectInfo(true))
+        }
+        uServiceProjects.start()
+
 
         val json = "{\"projectId\":55432,\"userId\":4765,\"date\":\"2015-05-17\",\"hours\":8}"
         val response = template.post("http://localhost:8081/time-entries", json)
@@ -56,24 +47,31 @@ class TimeEntryControllerTest : TestControllerSupport() {
         assertEquals(55432L, actual.projectId)
         assertEquals(4765L, actual.userId)
         assertEquals(8, actual.hours)
+
+        uServiceProjects.stop()
     }
 
     @Test
     fun testFailedCreate() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        whenever(client.getProject(any())).thenReturn(ProjectInfo(false))
+        val uServiceProjects = TestApp(8883) { mapper, outputStream ->
+            mapper.writeValue(outputStream, ProjectInfo(false))
+        }
+        uServiceProjects.start()
 
         val json = "{\"projectId\":55432,\"userId\":4765,\"date\":\"2015-05-17\",\"hours\":8}"
         val response = template.post("http://localhost:8081/time-entries", json)
         assert(response.isBlank())
+
+        uServiceProjects.stop()
     }
 
     @Test
     fun testFind() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        val response = template.get("http://localhost:8081/time-entries?userId={userId}", Pair("userId", "4765"))
+        val response = template.get("http://localhost:8081/time-entries?projectId={projectId}", Pair("projectId", "4765"))
         val stories: List<TimeEntryInfo> = mapper.readValue(response, object : TypeReference<List<TimeEntryInfo>>() {})
         val actual = stories.first()
 

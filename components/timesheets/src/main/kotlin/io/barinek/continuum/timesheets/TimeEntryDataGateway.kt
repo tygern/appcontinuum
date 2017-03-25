@@ -3,10 +3,12 @@ package io.barinek.continuum.timesheets
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
+import org.springframework.stereotype.Repository
 import java.sql.Date
 import java.sql.Statement.RETURN_GENERATED_KEYS
 import java.time.LocalDate
 
+@Repository
 class TimeEntryDataGateway(val jdbcTemplate: JdbcTemplate) {
 
     fun create(projectId: Long, userId: Long, date: LocalDate, hours: Int): TimeEntryRecord {

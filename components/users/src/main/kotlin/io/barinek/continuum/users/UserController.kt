@@ -1,18 +1,16 @@
 package io.barinek.continuum.users
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.barinek.continuum.restsupport.BasicHandler
-import org.eclipse.jetty.server.Request
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
-class UserController(val mapper: ObjectMapper, val gateway: UserDataGateway) : BasicHandler() {
+@RestController
+class UserController(val gateway: UserDataGateway) {
 
-    override fun handle(s: String, request: Request, httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse) {
-        get("/users", request, httpServletResponse) {
-            val userId = request.getParameter("userId")
-            val record = gateway.findObjectBy(userId.toLong())
-            mapper.writeValue(httpServletResponse.outputStream, UserInfo(record.id, record.name, "user info"))
-        }
+    @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/users")
+    fun list(@RequestParam userId: String): UserInfo {
+        val record = gateway.findObjectBy(userId.toLong())
+        return UserInfo(record.id, record.name, "user info")
     }
 }

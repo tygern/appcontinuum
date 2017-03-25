@@ -4,8 +4,10 @@ package io.barinek.continuum.users
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
+import org.springframework.stereotype.Repository
 import java.sql.Statement.RETURN_GENERATED_KEYS
 
+@Repository
 class UserDataGateway(val jdbcTemplate: JdbcTemplate) {
     fun create(name: String): UserRecord {
         val keyHolder: KeyHolder = GeneratedKeyHolder()

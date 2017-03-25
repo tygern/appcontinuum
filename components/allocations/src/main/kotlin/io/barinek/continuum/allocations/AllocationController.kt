@@ -1,28 +1,26 @@
 package io.barinek.continuum.allocations
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.barinek.continuum.restsupport.BasicHandler
-import org.eclipse.jetty.server.Request
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
-class AllocationController(val mapper: ObjectMapper, val gateway: AllocationDataGateway, val client: ProjectClient) : BasicHandler() {
+@RestController
+class AllocationController(val gateway: AllocationDataGateway, val client: ProjectClient) {
 
-    override fun handle(s: String, request: Request, httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse) {
-        post("/allocations", request, httpServletResponse) {
-            val allocation = mapper.readValue(request.reader, AllocationInfo::class.java)
-
-            if (projectIsActive(allocation.projectId)) {
-                val record = gateway.create(allocation.projectId, allocation.userId, allocation.firstDay, allocation.lastDay)
-                mapper.writeValue(httpServletResponse.outputStream, AllocationInfo(record.id, record.projectId, record.userId, record.firstDay, record.lastDay, "allocation info"))
-            }
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/allocations")
+    fun create(@RequestBody allocation: AllocationInfo): ResponseEntity<AllocationInfo> {
+        if (projectIsActive(allocation.projectId)) {
+            val record = gateway.create(allocation.projectId, allocation.userId, allocation.firstDay, allocation.lastDay)
+            val info = AllocationInfo(record.id, record.projectId, record.userId, record.firstDay, record.lastDay, "allocation info")
+            return ResponseEntity(info, HttpStatus.CREATED)
         }
-        get("/allocations", request, httpServletResponse) {
-            val projectId = request.getParameter("projectId")
-            val list = gateway.findBy(projectId.toLong()).map { record ->
-                AllocationInfo(record.id, record.projectId, record.userId, record.firstDay, record.lastDay, "allocation info")
-            }
-            mapper.writeValue(httpServletResponse.outputStream, list)
+        return ResponseEntity(HttpStatus.NOT_MODIFIED)
+    }
+
+    @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/allocations")
+    fun list(@RequestParam projectId: String): List<AllocationInfo> {
+        return gateway.findBy(projectId.toLong()).map { record ->
+            AllocationInfo(record.id, record.projectId, record.userId, record.firstDay, record.lastDay, "allocation info")
         }
     }
 

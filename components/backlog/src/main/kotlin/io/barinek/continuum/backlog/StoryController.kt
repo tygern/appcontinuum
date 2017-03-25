@@ -1,28 +1,26 @@
 package io.barinek.continuum.backlog
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.barinek.continuum.restsupport.BasicHandler
-import org.eclipse.jetty.server.Request
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
-class StoryController(val mapper: ObjectMapper, val gateway: StoryDataGateway, val client: ProjectClient) : BasicHandler() {
+@RestController
+class StoryController(val gateway: StoryDataGateway, val client: ProjectClient) {
 
-    override fun handle(s: String, request: Request, httpServletRequest: HttpServletRequest, httpServletResponse: HttpServletResponse) {
-        post("/stories", request, httpServletResponse) {
-            val story = mapper.readValue(request.reader, StoryInfo::class.java)
-
-            if (projectIsActive(story.projectId)) {
-                val record = gateway.create(story.projectId, story.name)
-                mapper.writeValue(httpServletResponse.outputStream, StoryInfo(record.id, record.projectId, record.name, "story info"))
-            }
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/stories")
+    fun create(@RequestBody story: StoryInfo): ResponseEntity<StoryInfo> {
+        if (projectIsActive(story.projectId)) {
+            val record = gateway.create(story.projectId, story.name)
+            val info = StoryInfo(record.id, record.projectId, record.name, "story info")
+            return ResponseEntity(info, HttpStatus.CREATED)
         }
-        get("/stories", request, httpServletResponse) {
-            val projectId = request.getParameter("projectId")
-            val list = gateway.findBy(projectId.toLong()).map { record ->
-                StoryInfo(record.id, record.projectId, record.name, "story info")
-            }
-            mapper.writeValue(httpServletResponse.outputStream, list)
+        return ResponseEntity(HttpStatus.NOT_MODIFIED)
+    }
+
+    @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/stories")
+    fun list(@RequestParam projectId: String): List<StoryInfo> {
+        return gateway.findBy(projectId.toLong()).map { record ->
+            StoryInfo(record.id, record.projectId, record.name, "story info")
         }
     }
 

@@ -2,9 +2,11 @@ package io.barinek.continuum.accounts
 
 import io.barinek.continuum.users.UserDataGateway
 import io.barinek.continuum.users.UserRecord
+import org.springframework.context.annotation.Configuration
 import org.springframework.transaction.annotation.Transactional
 
-class RegistrationService(val userDataGateway: UserDataGateway, val accountDataGateway: AccountDataGateway) {
+@Configuration
+open class RegistrationService(val userDataGateway: UserDataGateway, val accountDataGateway: AccountDataGateway) {
 
     @Transactional
     fun createUserWithAccount(name: String): UserRecord {

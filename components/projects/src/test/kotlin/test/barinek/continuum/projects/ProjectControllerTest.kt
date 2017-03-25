@@ -2,32 +2,19 @@ package test.barinek.continuum.projects
 
 import com.fasterxml.jackson.core.type.TypeReference
 import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.projects.ProjectController
-import io.barinek.continuum.projects.ProjectDataGateway
 import io.barinek.continuum.projects.ProjectInfo
-import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.restsupport.post
-import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 class ProjectControllerTest : TestControllerSupport() {
-    internal var app: BasicApp = object : BasicApp() {
-
-        override fun getPort() = 8081
-
-        override fun handlerList() = HandlerList().apply {
-            val dataSource = TestDataSourceConfig().dataSource
-            addHandler(ProjectController(mapper, ProjectDataGateway(JdbcTemplate(dataSource))))
-        }
-    }
+    val app = SpringApp(8081, "io.barinek.continuum")
 
     @Before
     fun setUp() {

@@ -1,29 +1,17 @@
 package test.barinek.continuum.users
 
 import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
-import io.barinek.continuum.users.UserController
-import io.barinek.continuum.users.UserDataGateway
 import io.barinek.continuum.users.UserInfo
-import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class UserControllerTest : TestControllerSupport() {
-    internal var app: BasicApp = object : BasicApp() {
-        override fun getPort() = 8081
-
-        override fun handlerList() = HandlerList().apply {
-            val dataSource = TestDataSourceConfig().dataSource
-            addHandler(UserController(mapper, UserDataGateway(JdbcTemplate(dataSource))))
-        }
-    }
+    val app = SpringApp(8081, "io.barinek.continuum")
 
     @Before
     fun setUp() {

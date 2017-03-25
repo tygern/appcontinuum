@@ -1,35 +1,22 @@
 package test.barinek.continuum.allocations
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import io.barinek.continuum.TestApp
 import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.allocations.*
-import io.barinek.continuum.restsupport.BasicApp
+import io.barinek.continuum.allocations.AllocationInfo
+import io.barinek.continuum.allocations.ProjectInfo
+import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.restsupport.post
-import org.eclipse.jetty.server.handler.HandlerList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
 class AllocationControllerTest : TestControllerSupport() {
-    val projectClient = mock<ProjectClient>()
-
-    internal var app: BasicApp = object : BasicApp() {
-        override fun getPort() = 8081
-
-        override fun handlerList() = HandlerList().apply {
-            val dataSource = TestDataSourceConfig().dataSource
-            addHandler(AllocationController(mapper, AllocationDataGateway(JdbcTemplate(dataSource)), projectClient))
-        }
-    }
+    val app = SpringApp(8081, "io.barinek.continuum")
 
     @Before
     fun setUp() {
@@ -45,7 +32,10 @@ class AllocationControllerTest : TestControllerSupport() {
     fun testCreate() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        whenever(projectClient.getProject(any())).thenReturn(ProjectInfo(true))
+        val uServiceProjects = TestApp(8883) { mapper, outputStream ->
+            mapper.writeValue(outputStream, ProjectInfo(true))
+        }
+        uServiceProjects.start()
 
         val json = "{\"projectId\":55432,\"userId\":4765,\"firstDay\":\"2014-05-16\",\"lastDay\":\"2014-05-26\"}"
         val response = template.post("http://localhost:8081/allocations", json)
@@ -57,17 +47,24 @@ class AllocationControllerTest : TestControllerSupport() {
         assertEquals(LocalDate.of(2014, 5, 16), actual.firstDay)
         assertEquals(LocalDate.of(2014, 5, 26), actual.lastDay)
         assertEquals("allocation info", actual.info)
+
+        uServiceProjects.stop()
     }
 
     @Test
     fun testFailedCreate() {
         TestScenarioSupport().loadTestScenario("jacks-test-scenario")
 
-        whenever(projectClient.getProject(any())).thenReturn(ProjectInfo(false))
+        val uServiceProjects = TestApp(8883) { mapper, outputStream ->
+            mapper.writeValue(outputStream, ProjectInfo(false))
+        }
+        uServiceProjects.start()
 
         val json = "{\"projectId\":55432,\"userId\":4765,\"firstDay\":\"2014-05-16\",\"lastDay\":\"2014-05-26\"}"
         val response = template.post("http://localhost:8081/allocations", json)
         assert(response.isBlank())
+
+        uServiceProjects.stop()
     }
 
     @Test
