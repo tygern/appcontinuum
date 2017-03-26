@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class StoryController(val gateway: StoryDataGateway, val client: ProjectClient) {
+open class StoryController(open val gateway: StoryDataGateway, open val client: ProjectClient) {
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/stories")
     fun create(@RequestBody story: StoryInfo): ResponseEntity<StoryInfo> {

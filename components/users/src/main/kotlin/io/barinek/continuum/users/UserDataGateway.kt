@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 import java.sql.Statement.RETURN_GENERATED_KEYS
 
 @Repository
-class UserDataGateway(val jdbcTemplate: JdbcTemplate) {
+open class UserDataGateway(open val jdbcTemplate: JdbcTemplate) {
     fun create(name: String): UserRecord {
         val keyHolder: KeyHolder = GeneratedKeyHolder()
 
@@ -32,9 +32,11 @@ class UserDataGateway(val jdbcTemplate: JdbcTemplate) {
         }
     }
 
-    fun findObjectBy(id: Long): UserRecord {
+    fun findObjectBy(id: Long): UserRecord? {
         val s = "select id, name from users where id = ? limit 1"
         val find = jdbcTemplate.query(s, arrayOf(id)) { rs, num -> UserRecord(rs.getLong(1), rs.getString(2)) }
+        if (find.isEmpty())
+            return null
         return find[0]
     }
 }

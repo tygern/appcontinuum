@@ -1,8 +1,8 @@
 package test.barinek.continuum.accounts
 
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.accounts.AccountDataGateway
 import io.barinek.continuum.accounts.RegistrationService
+import io.barinek.continuum.testsupport.TestDataSourceConfig
 import io.barinek.continuum.users.UserDataGateway
 import org.junit.Test
 import org.springframework.jdbc.core.JdbcTemplate

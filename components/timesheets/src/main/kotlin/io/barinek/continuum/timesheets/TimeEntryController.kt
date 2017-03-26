@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class TimeEntryController(val gateway: TimeEntryDataGateway, val client: ProjectClient) {
+open class TimeEntryController(open val gateway: TimeEntryDataGateway, open val client: ProjectClient) {
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/time-entries")
     fun create(@RequestBody entry: TimeEntryInfo): ResponseEntity<TimeEntryInfo> {

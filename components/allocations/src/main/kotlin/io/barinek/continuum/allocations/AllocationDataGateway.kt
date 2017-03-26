@@ -9,7 +9,7 @@ import java.sql.Statement.RETURN_GENERATED_KEYS
 import java.time.LocalDate
 
 @Repository
-class AllocationDataGateway(val jdbcTemplate: JdbcTemplate) {
+open class AllocationDataGateway(open val jdbcTemplate: JdbcTemplate) {
 
     fun create(projectId: Long, userId: Long, firstDay: LocalDate, lastDay: LocalDate): AllocationRecord {
         val keyHolder: KeyHolder = GeneratedKeyHolder()

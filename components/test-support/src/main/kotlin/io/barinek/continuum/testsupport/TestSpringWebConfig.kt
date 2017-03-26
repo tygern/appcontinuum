@@ -1,4 +1,4 @@
-package io.barinek.continuum.restsupport
+package io.barinek.continuum.testsupport
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 @EnableWebMvc
-open class SpringWebConfig : WebMvcConfigurerAdapter() {
+open class TestSpringWebConfig : WebMvcConfigurerAdapter() {
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         converters.add(MappingJackson2HttpMessageConverter(ObjectMapper().registerKotlinModule().registerModule(JavaTimeModule())!!))
         converters.add(StringHttpMessageConverter())

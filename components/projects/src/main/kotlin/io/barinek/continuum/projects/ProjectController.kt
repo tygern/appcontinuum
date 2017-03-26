@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class ProjectController(val gateway: ProjectDataGateway) {
+open class ProjectController(open val gateway: ProjectDataGateway) {
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/projects")
     fun create(@RequestBody project: ProjectInfo): ResponseEntity<ProjectInfo> {

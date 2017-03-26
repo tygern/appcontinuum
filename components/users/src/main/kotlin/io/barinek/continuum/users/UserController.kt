@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class UserController(val gateway: UserDataGateway) {
+open class UserController(open val gateway: UserDataGateway) {
 
     @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/users")
-    fun list(@RequestParam userId: String): UserInfo {
-        val record = gateway.findObjectBy(userId.toLong())
+    fun list(@RequestParam userId: String): UserInfo? {
+        val record = gateway.findObjectBy(userId.toLong()) ?: return null
         return UserInfo(record.id, record.name, "user info")
     }
 }

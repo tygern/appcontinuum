@@ -1,10 +1,8 @@
 package test.barinek.continuum
 
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.restsupport.post
-import org.junit.After
-import org.junit.Before
+import io.barinek.continuum.testsupport.TestDataSourceConfig
 import org.junit.Test
 import org.springframework.web.client.RestTemplate
 import java.io.File
@@ -13,37 +11,17 @@ import kotlin.test.assertEquals
 class FlowTest {
     val dataSource = TestDataSourceConfig() // cleans the database
     val template = RestTemplate()
-
-    lateinit var allocations: Process
-    lateinit var backlog: Process
-    lateinit var registration: Process
-    lateinit var timesheets: Process
-
-    @Before
-    fun setUp() {
-        val userDir = System.getProperty("user.dir")
-
-        allocations = runCommand(8881, "java -jar $userDir/../allocations-server/build/libs/allocations-server-1.0-SNAPSHOT.jar", File(userDir))
-        backlog = runCommand(8882, "java -jar $userDir/../backlog-server/build/libs/backlog-server-1.0-SNAPSHOT.jar", File(userDir))
-        registration = runCommand(8883, "java -jar $userDir/../registration-server/build/libs/registration-server-1.0-SNAPSHOT.jar", File(userDir))
-        timesheets = runCommand(8884, "java -jar $userDir/../timesheets-server/build/libs/timesheets-server-1.0-SNAPSHOT.jar", File(userDir))
-    }
-
-    @After
-    fun tearDown() {
-        allocations.destroy()
-        backlog.destroy()
-        registration.destroy()
-        timesheets.destroy()
-    }
+    val userDir = System.getProperty("user.dir")
 
     @Test
     fun testBasicFlow() {
-        Thread.sleep(10000) // sorry, waiting for servers to start, bit longer for spring-webmvc
-
         var response: String?
 
         val registrationServer = "http://localhost:8883"
+
+        val registration = runCommand(8883, "java -jar $userDir/../registration-server/build/libs/registration-server-1.0-SNAPSHOT.jar", File(userDir))
+
+        Thread.sleep(8000) // sorry, waiting for servers to start, bit longer for spring-webmvc
 
         response = template.get(registrationServer)
         assertEquals("Noop!", response)
@@ -70,6 +48,10 @@ class FlowTest {
 
         val allocationsServer = "http://localhost:8881"
 
+        val allocations = runCommand(8881, "java -jar $userDir/../allocations-server/build/libs/allocations-server-1.0-SNAPSHOT.jar", File(userDir))
+
+        Thread.sleep(8000) // sorry, waiting for servers to start, bit longer for spring-webmvc
+
         response = template.get(allocationsServer)
         assertEquals("Noop!", response)
 
@@ -80,8 +62,15 @@ class FlowTest {
         response = template.get("$allocationsServer/allocations?projectId={projectId}", Pair("projectId", aProjectId))
         assert(!response.isNullOrEmpty())
 
+        allocations.destroy()
+
+        ///
 
         val backlogServer = "http://localhost:8882"
+
+        val backlog = runCommand(8882, "java -jar $userDir/../backlog-server/build/libs/backlog-server-1.0-SNAPSHOT.jar", File(userDir))
+
+        Thread.sleep(8000) // sorry, waiting for servers to start, bit longer for spring-webmvc
 
         response = template.get(backlogServer)
         assertEquals("Noop!", response)
@@ -93,8 +82,15 @@ class FlowTest {
         response = template.get("$backlogServer/stories?projectId={projectId}", Pair("projectId", aProjectId))
         assert(!response.isNullOrEmpty())
 
+        backlog.destroy()
+
+        ///
 
         val timesheetsServer = "http://localhost:8884"
+
+        val timesheets = runCommand(8884, "java -jar $userDir/../timesheets-server/build/libs/timesheets-server-1.0-SNAPSHOT.jar", File(userDir))
+
+        Thread.sleep(8000) // sorry, waiting for servers to start, bit longer for spring-webmvc
 
         response = template.get(timesheetsServer)
         assertEquals("Noop!", response)
@@ -105,6 +101,12 @@ class FlowTest {
 
         response = template.get("$timesheetsServer/time-entries?projectId={projectId}", Pair("projectId", aUserId))
         assert(!response.isNullOrEmpty())
+
+        timesheets.destroy()
+
+        ///
+
+        registration.destroy() // dependency of above 3
     }
 
     /// Test Support

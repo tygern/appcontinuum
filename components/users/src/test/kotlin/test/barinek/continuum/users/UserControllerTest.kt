@@ -1,9 +1,9 @@
 package test.barinek.continuum.users
 
-import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
+import io.barinek.continuum.testsupport.TestControllerSupport
+import io.barinek.continuum.testsupport.TestScenarioSupport
+import io.barinek.continuum.testsupport.TestSpringApp
 import io.barinek.continuum.users.UserInfo
 import org.junit.After
 import org.junit.Before
@@ -11,7 +11,10 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class UserControllerTest : TestControllerSupport() {
-    val app = SpringApp(8081, "io.barinek.continuum")
+    val app = TestSpringApp(8081, "io.barinek.continuum.users",
+            "io.barinek.continuum.jdbcsupport",
+            "io.barinek.continuum.restsupport",
+            "io.barinek.continuum.testsupport")
 
     @Before
     fun setUp() {

@@ -9,7 +9,7 @@ import java.sql.Statement.RETURN_GENERATED_KEYS
 import java.time.LocalDate
 
 @Repository
-class TimeEntryDataGateway(val jdbcTemplate: JdbcTemplate) {
+open class TimeEntryDataGateway(open val jdbcTemplate: JdbcTemplate) {
 
     fun create(projectId: Long, userId: Long, date: LocalDate, hours: Int): TimeEntryRecord {
         val keyHolder: KeyHolder = GeneratedKeyHolder()

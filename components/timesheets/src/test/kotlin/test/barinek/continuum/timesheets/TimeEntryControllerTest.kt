@@ -1,12 +1,12 @@
 package test.barinek.continuum.timesheets
 
 import com.fasterxml.jackson.core.type.TypeReference
-import io.barinek.continuum.TestApp
-import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestScenarioSupport
-import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.restsupport.post
+import io.barinek.continuum.testsupport.TestApp
+import io.barinek.continuum.testsupport.TestControllerSupport
+import io.barinek.continuum.testsupport.TestScenarioSupport
+import io.barinek.continuum.testsupport.TestSpringApp
 import io.barinek.continuum.timesheets.ProjectInfo
 import io.barinek.continuum.timesheets.TimeEntryInfo
 import org.junit.After
@@ -16,7 +16,10 @@ import java.time.LocalDate
 import kotlin.test.assertEquals
 
 class TimeEntryControllerTest : TestControllerSupport() {
-    val app = SpringApp(8081, "io.barinek.continuum")
+    val app = TestSpringApp(8081, "io.barinek.continuum.timesheets",
+            "io.barinek.continuum.jdbcsupport",
+            "io.barinek.continuum.restsupport",
+            "io.barinek.continuum.testsupport")
 
     @Before
     fun setUp() {

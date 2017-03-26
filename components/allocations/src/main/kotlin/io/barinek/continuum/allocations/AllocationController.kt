@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class AllocationController(val gateway: AllocationDataGateway, val client: ProjectClient) {
+open class AllocationController(open val gateway: AllocationDataGateway, open val client: ProjectClient) {
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/allocations")
     fun create(@RequestBody allocation: AllocationInfo): ResponseEntity<AllocationInfo> {

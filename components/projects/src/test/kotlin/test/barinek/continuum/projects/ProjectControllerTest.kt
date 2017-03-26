@@ -1,12 +1,12 @@
 package test.barinek.continuum.projects
 
 import com.fasterxml.jackson.core.type.TypeReference
-import io.barinek.continuum.TestControllerSupport
-import io.barinek.continuum.TestScenarioSupport
 import io.barinek.continuum.projects.ProjectInfo
-import io.barinek.continuum.restsupport.SpringApp
 import io.barinek.continuum.restsupport.get
 import io.barinek.continuum.restsupport.post
+import io.barinek.continuum.testsupport.TestControllerSupport
+import io.barinek.continuum.testsupport.TestScenarioSupport
+import io.barinek.continuum.testsupport.TestSpringApp
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 class ProjectControllerTest : TestControllerSupport() {
-    val app = SpringApp(8081, "io.barinek.continuum")
+    val app = TestSpringApp(8081, "io.barinek.continuum")
 
     @Before
     fun setUp() {

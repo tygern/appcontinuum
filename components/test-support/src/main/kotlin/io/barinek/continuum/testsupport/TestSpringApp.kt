@@ -1,5 +1,6 @@
-package io.barinek.continuum.restsupport
+package io.barinek.continuum.testsupport
 
+import io.barinek.continuum.restsupport.BasicApp
 import org.eclipse.jetty.server.Handler
 import org.eclipse.jetty.server.handler.HandlerList
 import org.eclipse.jetty.servlet.ServletContextHandler
@@ -9,7 +10,7 @@ import org.springframework.web.context.WebApplicationContext
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext
 import org.springframework.web.servlet.DispatcherServlet
 
-open class SpringApp(defaultPort: Int, vararg pathsToScan: String) : BasicApp(defaultPort, pathsToScan) {
+open class TestSpringApp(defaultPort: Int, vararg pathsToScan: String) : BasicApp(defaultPort, pathsToScan) {
 
     override fun handlerList(): HandlerList {
         val list = HandlerList()
@@ -27,7 +28,7 @@ open class SpringApp(defaultPort: Int, vararg pathsToScan: String) : BasicApp(de
 
     private fun getContext(): WebApplicationContext {
         return AnnotationConfigWebApplicationContext().apply {
-            setConfigLocations(pathsToScan.joinToString(","))
+            setConfigLocations(*pathsToScan)
         }
     }
 }

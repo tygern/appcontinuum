@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class RegistrationController(val service: RegistrationService) {
+open class RegistrationController(open val service: RegistrationService) {
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/registration")
     fun create(@RequestBody user: UserInfo): UserInfo {

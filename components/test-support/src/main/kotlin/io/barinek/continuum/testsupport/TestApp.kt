@@ -1,4 +1,4 @@
-package io.barinek.continuum
+package io.barinek.continuum.testsupport
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.barinek.continuum.restsupport.BasicApp

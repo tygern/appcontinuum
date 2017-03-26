@@ -1,6 +1,6 @@
 package test.barinek.continuum.users
 
-import io.barinek.continuum.TestDataSourceConfig
+import io.barinek.continuum.testsupport.TestDataSourceConfig
 import io.barinek.continuum.users.UserDataGateway
 import org.junit.Test
 import org.springframework.jdbc.core.JdbcTemplate
@@ -32,7 +32,7 @@ class UserDataGatewayTest() {
 
         val actual = gateway.findObjectBy(42347L)
 
-        assertEquals(42347, actual.id)
+        assertEquals(42347, actual!!.id)
         assertEquals("anotherName", actual.name)
     }
 }

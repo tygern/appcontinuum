@@ -1,4 +1,4 @@
-package io.barinek.continuum
+package io.barinek.continuum.testsupport
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule

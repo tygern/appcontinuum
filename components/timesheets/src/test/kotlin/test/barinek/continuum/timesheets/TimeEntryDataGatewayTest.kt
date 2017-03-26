@@ -1,6 +1,6 @@
 package test.barinek.continuum.timesheets
 
-import io.barinek.continuum.TestDataSourceConfig
+import io.barinek.continuum.testsupport.TestDataSourceConfig
 import io.barinek.continuum.timesheets.TimeEntryDataGateway
 import org.junit.Test
 import org.springframework.jdbc.core.JdbcTemplate

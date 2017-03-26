@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.transaction.annotation.Transactional
 
 @Configuration
-open class RegistrationService(val userDataGateway: UserDataGateway, val accountDataGateway: AccountDataGateway) {
+open class RegistrationService(open val userDataGateway: UserDataGateway, open val accountDataGateway: AccountDataGateway) {
 
     @Transactional
     fun createUserWithAccount(name: String): UserRecord {

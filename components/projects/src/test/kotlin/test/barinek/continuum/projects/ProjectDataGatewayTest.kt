@@ -1,7 +1,7 @@
 package test.barinek.continuum.projects
 
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.projects.ProjectDataGateway
+import io.barinek.continuum.testsupport.TestDataSourceConfig
 import org.junit.Test
 import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals

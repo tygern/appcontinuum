@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 import java.sql.Statement.RETURN_GENERATED_KEYS
 
 @Repository
-class StoryDataGateway(val jdbcTemplate: JdbcTemplate) {
+open class StoryDataGateway(open val jdbcTemplate: JdbcTemplate) {
 
     fun create(projectId: Long, name: String): StoryRecord {
         val keyHolder: KeyHolder = GeneratedKeyHolder()

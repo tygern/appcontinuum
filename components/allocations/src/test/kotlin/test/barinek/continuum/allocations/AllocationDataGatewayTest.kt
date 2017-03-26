@@ -1,7 +1,7 @@
 package test.barinek.continuum.allocations
 
-import io.barinek.continuum.TestDataSourceConfig
 import io.barinek.continuum.allocations.AllocationDataGateway
+import io.barinek.continuum.testsupport.TestDataSourceConfig
 import org.junit.Test
 import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate

@@ -1,12 +1,19 @@
 version "1.0-SNAPSHOT"
 
+bootRepackage.enabled = false
+
 dependencies {
     compile project(":components:jdbc-support")
     compile project(":components:rest-support")
     compile project(":components:test-support")
 
-    compile project(":applications:allocations-server")
-    compile project(":applications:backlog-server")
-    compile project(":applications:registration-server")
-    compile project(":applications:timesheets-server")
+    testRuntime project(":applications:allocations-server")
+    testRuntime project(":applications:backlog-server")
+    testRuntime project(":applications:registration-server")
+    testRuntime project(":applications:timesheets-server")
 }
+
+test.dependsOn ":applications:allocations-server:bootRepackage"
+test.dependsOn ":applications:backlog-server:bootRepackage"
+test.dependsOn ":applications:registration-server:bootRepackage"
+test.dependsOn ":applications:timesheets-server:bootRepackage"

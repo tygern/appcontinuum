@@ -13,6 +13,10 @@ v3              Feature groups (Bounded Context)
 v4              Components
 v5              Applications
 v6              Services
+v7              spring-jdbc-template
+v8              spring-rest-template
+v9              spring-web
+v10             spring-boot
 ```
 
 ### Database Setup
@@ -31,12 +35,21 @@ flyway -url="jdbc:mysql://localhost:3306/uservices_test?user=root&password=" -lo
 
 ### Test and Production Environment
 
-````
+```
 export PORT=8081
 
-export VCAP_SERVICES='{ "services": { "p-mysql": [ { "credentials": { "jdbcUrl": "jdbc:mysql://localhost:3306/uservices_test?user=root&password=&useTimezone=true&serverTimezone=UTC" } } ] } }'
+export VCAP_SERVICES='{ "p-mysql": [ { "credentials": { "jdbcUrl": "jdbc:mysql://localhost:3306/uservices_test?user=root&password=&useTimezone=true&serverTimezone=UTC" } } ] }'
 
 export REGISTRATION_SERVER_ENDPOINT=http://localhost:8883
-````
+```
 
 _Note: The registration server endpoint port must match the port used in the FlowTest_
+
+
+### Spring Boot DataSource Configuration
+
+```
+export SPRING_DATASOURCE_URL='jdbc:mysql://localhost:3306/uservices_test?user=root&password=&useTimezone=true&serverTimezone=UTC'
+
+export SPRING_DATASOURCE_USERNAME=root
+```

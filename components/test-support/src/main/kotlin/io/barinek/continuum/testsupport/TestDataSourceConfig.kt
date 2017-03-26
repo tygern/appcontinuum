@@ -1,4 +1,4 @@
-package io.barinek.continuum
+package io.barinek.continuum.testsupport
 
 import io.barinek.continuum.jdbcsupport.DataSourceConfig
 import org.springframework.jdbc.core.JdbcTemplate
