@@ -5,7 +5,7 @@ The evolution of a component based architecture
 See Git tags for step-by-step notes.
 
 ```
-git tag -ln
+git tag -ln --sort=v:refname
 
 v1              First commit
 v2              Functional groups
